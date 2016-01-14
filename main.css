@@ -1,7 +1,10 @@
+
 .player {
-	/*background: #f20f16;*/
+	background: #F7F7F7;
 	max-width: 100%;
 	padding: 10px;
+	font-family: 'Verdana';
+	font-size: 12px;
 }
 
 .player .progress-bar {
