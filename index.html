@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Player</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="main.css">
+
+		<style type="text/css">
+
+			button {
+				border: none;
+				box-shadow: none;
+				font-family: 'Comic Sans MS';
+				font-size: 18px;
+				outline-style: none;
+				cursor: pointer;
+			}
+
+			.active {
+				background-color: #bada55;
+			}
+		</style>
+
+	</head>
+
+	<body>
+
+		<div class="player">
+			<button class="play">Play</button>
+			<button class="pause">Pause</button>
+		</div>
+
+		<div class="style_input">
+			<label>Duration</label>
+			<progress value="0" max="100"><progress>
+		</div>
+
+		<div class="style_input">
+			<label>Volume</label>
+			<input type="range" min="0" max="100" />
+		</div>
+
+		<button class="loop">tu veux loop ?</button>
+
+		<script type="text/javascript">
+			var play = document.querySelector('.play');
+			var pause = document.querySelector('.pause');
+
+			var progress = document.querySelector('progress');
+			var volume = document.querySelector('input[type=range]');
+
+			var loop = document.querySelector('.loop');
+
+			var audio = new Audio(getAudioParameter());
+
+			var firstplay = true;
+			var duration;
+			
+			var autoplay = true;
+
+			checkAutoplay();
+
+			function calculDuration() {
+					duration = audio.duration;
+
+					var interval = setInterval(function() {
+						if(audio.currentTime * 100 / duration <= 100) {
+							progress.value = audio.currentTime * 100 / duration;
+						} else {
+							clearInterval(interval);
+						}
+					}, 1000);
+			}
+
+			function checkVolume() {
+				audio.volume = 0.5;
+
+				volume.addEventListener('input', function() {
+					audio.volume = volume.value / 100;
+				});
+			}
+
+			function checkLoop() {
+				loop.addEventListener('click', function() {
+
+					if(audio.loop) {
+						audio.loop = false;
+						loop.className = '';
+					} else {
+						audio.loop = true;
+						loop.className = 'active';
+					}
+
+
+				});
+			}
+
+			function firstPlayAudio() {
+				firstplay = false;
+				audio.addEventListener('loadedmetadata', function() {
+					audio.play();
+					calculDuration();
+					checkVolume();
+					checkLoop();
+				});
+			}
+
+			function checkAutoplay() {
+
+				if(autoplay) {
+
+					play.style.display = 'none';
+					firstPlayAudio();
+					
+				} else {
+					pause.style.display = 'none';
+				}
+			}
+
+			function getUrlVars(){
+				var vars = {},
+						parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+					vars[key] = value;
+					});
+				return vars;
+			}
+
+			function getAudioParameter() {
+				return getUrlVars().audio;
+			}
+
+			play.addEventListener('click',function() {
+
+				if(firstplay) firstPlayAudio();
+
+				audio.play();
+				pause.style.display = 'block';
+				play.style.display = 'none';
+			},false);
+
+			pause.addEventListener('click',function() {
+				audio.pause();
+				play.style.display = 'block';
+				pause.style.display = 'none';
+			},false);
+
+		</script>
+
+	</body>
+
+</html>
