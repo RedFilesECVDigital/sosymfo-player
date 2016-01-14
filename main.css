@@ -1,0 +1,54 @@
+.player {
+	/*background: #f20f16;*/
+	max-width: 100%;
+	padding: 10px;
+}
+
+.player .progress-bar {
+	width: 100%;
+	border: none;
+}
+
+.player .progress-bar[value] {
+  /* Reset the default appearance */
+/*  -webkit-appearance: none;
+*/   appearance: none;
+
+  width: 250px;
+  height: 20px;
+}
+
+button {
+	color: transparent;
+	width: 16px;
+	height: 16px;
+	border: none;
+	box-shadow: none;
+	font-size: 0;
+	outline-style: none;
+	cursor: pointer;
+}
+
+button#pause {
+	background: url(images/pause.png) no-repeat;
+}
+
+button#play {
+	background: url(images/play.png) no-repeat;
+}
+
+button#speaker {
+	background: url(images/speaker.png) no-repeat;
+}
+
+button#speaker.mute {
+	background: url(images/speaker-mute.png) no-repeat;
+}
+
+button#loop {
+	background: url(images/loop.png) no-repeat;
+}
+
+button#loop.active {
+	background: url(images/loop-active.png) no-repeat;
+}

@@ -4,75 +4,86 @@
 		<title>Player</title>
 		<meta charset="utf-8">
 		<link rel="stylesheet" type="text/css" href="main.css">
-
-		<style type="text/css">
-
-			button {
-				border: none;
-				box-shadow: none;
-				font-family: 'Comic Sans MS';
-				font-size: 18px;
-				outline-style: none;
-				cursor: pointer;
-			}
-
-			.active {
-				background-color: #bada55;
-			}
-		</style>
-
 	</head>
 
 	<body>
 
 		<div class="player">
-			<button class="play">Play</button>
-			<button class="pause">Pause</button>
-		</div>
+			<button id="play">Play</button>
+			<button id="pause">Pause</button>
+		
 
-		<div class="style_input">
-			<label>Duration</label>
-			<progress value="0" max="100"><progress>
-		</div>
+			<div class="style_input">
+				<progress value="0" max="100" class="progress-bar"><progress>
+			</div>
 
-		<div class="style_input">
-			<label>Volume</label>
-			<input type="range" min="0" max="100" />
-		</div>
+			<div class="time"></div>
 
-		<button class="loop">tu veux loop ?</button>
+			<div class="style_input">
+				<input type="range" min="0" max="100" /><button id="speaker">Mute</button>
+			</div>
+
+			<button id="loop">Loop</button>
+		</div>
 
 		<script type="text/javascript">
-			var play = document.querySelector('.play');
-			var pause = document.querySelector('.pause');
+			var play = document.querySelector('#play'),
+					pause = document.querySelector('#pause'),
+					speaker = document.querySelector('#speaker');
 
-			var progress = document.querySelector('progress');
-			var volume = document.querySelector('input[type=range]');
+			var progress = document.querySelector('progress'),
+					volume = document.querySelector('input[type=range]');
 
-			var loop = document.querySelector('.loop');
+			var loop = document.querySelector('#loop');
+
+			var divTime = document.querySelector('.time');
 
 			var audio = new Audio(getAudioParameter());
-
-			var firstplay = true;
 			var duration;
-			
 			var autoplay = true;
 
-			checkAutoplay();
+			initAudio();
 
-			function calculDuration() {
+			function formatTime(time) {
+
+				var minute = Math.floor(time / 60),
+						seconde = time % 60;
+
+				seconde = Math.round(seconde);
+
+				if(minute < 10) minute = "0"+minute;
+				if(seconde < 10) seconde = "0"+seconde;
+
+				return minute+":"+seconde;
+			}
+
+			function appendProgressTime(currentTime) {
+				total_duration = formatTime(audio.duration);
+				currentTime = formatTime(currentTime);
+
+				divTime.innerHTML = currentTime+" / "+total_duration;
+			}
+
+			function refreshProgressBar() {
 					duration = audio.duration;
 
+					var calculProgressBar;
+
 					var interval = setInterval(function() {
-						if(audio.currentTime * 100 / duration <= 100) {
-							progress.value = audio.currentTime * 100 / duration;
+
+						calculProgressBar = audio.currentTime * 100 / duration;
+
+						if(calculProgressBar < 100) {
+							progress.value = calculProgressBar;
+
+							appendProgressTime(audio.currentTime);
 						} else {
 							clearInterval(interval);
 						}
-					}, 1000);
+					}, 100);
 			}
 
-			function checkVolume() {
+			function initVolume() {
 				audio.volume = 0.5;
 
 				volume.addEventListener('input', function() {
@@ -80,7 +91,8 @@
 				});
 			}
 
-			function checkLoop() {
+			function initLoop() {
+
 				loop.addEventListener('click', function() {
 
 					if(audio.loop) {
@@ -90,27 +102,25 @@
 						audio.loop = true;
 						loop.className = 'active';
 					}
-
-
 				});
 			}
 
 			function firstPlayAudio() {
-				firstplay = false;
+
 				audio.addEventListener('loadedmetadata', function() {
-					audio.play();
-					calculDuration();
-					checkVolume();
-					checkLoop();
+					refreshProgressBar();
+					initVolume();
+					initLoop();
 				});
 			}
 
-			function checkAutoplay() {
+			function initAudio() {
+
+				firstPlayAudio();
 
 				if(autoplay) {
-
+					audio.play();
 					play.style.display = 'none';
-					firstPlayAudio();
 					
 				} else {
 					pause.style.display = 'none';
@@ -130,19 +140,21 @@
 			}
 
 			play.addEventListener('click',function() {
-
-				if(firstplay) firstPlayAudio();
-
 				audio.play();
 				pause.style.display = 'block';
 				play.style.display = 'none';
-			},false);
+			});
 
 			pause.addEventListener('click',function() {
 				audio.pause();
 				play.style.display = 'block';
 				pause.style.display = 'none';
-			},false);
+			});
+
+			speaker.addEventListener('click', function() {
+				audio.muted = !audio.muted;
+				speaker.classList.toggle('mute');
+			});
 
 		</script>
 
