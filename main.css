@@ -2,6 +2,7 @@ body {
     margin: 0 auto;
     position: relative;
     text-align: center;
+    color: #203765;
 }
 
 .player {
@@ -76,7 +77,7 @@ button#loop.active {
     position: relative;
     width: 170px;
     height: 170px;
-    background-color: #d6dadc;
+    background-color: #91b4e5;
     border-radius: 50%;
     left: 50%;
     transform: translateX(-50%);
@@ -105,7 +106,7 @@ button#loop.active {
 
 .radial-progress .circle .mask .fill {
     clip: rect(0px, 85px, 170px, 0px);
-    background-color: #97a71d;
+    background-color: #3a66c5;
 }
 
 .radial-progress .inset {
