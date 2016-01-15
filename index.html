@@ -1,163 +1,210 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Player</title>
-		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="main.css">
-	</head>
 
-	<body>
+<head>
+    <title>Player</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
 
-		<div class="player">
-			<button id="play">Play</button>
-			<button id="pause">Pause</button>
-		
+<body>
 
-			<div class="progress">
-				<progress value="0" max="100" class="progress-bar"><progress>
-			</div>
+    <div class="player">
+        <!--
+        <button id="play">Play</button>
+        <button id="pause">Pause</button>
+-->
 
-			<div class="time"></div>
 
-			<div class="volume">
-				<input type="range" min="0" max="100" /><button id="speaker">Mute</button>
-			</div>
+        <div class="radial-progress">
+            <button class="play"></button>
+            <div class="circle">
+                <div class="mask full">
+                    <div class="fill"></div>
+                </div>
+                <div class="mask half">
+                    <div class="fill"></div>
+                    <div class="fill fix"></div>
+                </div>
+                <div class="shadow"></div>
+            </div>
+            <div class="inset"></div>
+        </div>
 
-			<button id="loop">Loop</button>
-		</div>
 
-		<script type="text/javascript">
-			var play = document.querySelector('#play'),
-					pause = document.querySelector('#pause'),
-					speaker = document.querySelector('#speaker');
+        <!--
+        <div class="progress">
+            <progress value="0" max="100" class="progress-bar">
+        </div>
+-->
 
-			var progress = document.querySelector('progress'),
-					volume = document.querySelector('input[type=range]');
 
-			var loop = document.querySelector('#loop');
+        <div class="time"></div>
 
-			var divTime = document.querySelector('.time');
+        <div class="volume">
+            <button id="speaker">Mute</button>
+            <input type="range" min="0" max="100" />
+            <button id="loop">Loop</button>
+        </div>
 
-			var audio = new Audio(getAudioParameter());
-			var duration;
-			var autoplay = true;
+    </div>
 
-			initAudio();
+    <script type="text/javascript">
+        var //play = document.querySelector('#play'),
+        //            pause = document.querySelector('#pause'),
+            speaker = document.querySelector('#speaker');
 
-			function formatTime(time) {
+        var //progress = document.querySelector('progress'),
+            volume = document.querySelector('input[type=range]');
 
-				var minute = Math.floor(time / 60),
-						seconde = time % 60;
+        var loop = document.querySelector('#loop');
 
-				seconde = Math.round(seconde);
+        var divTime = document.querySelector('.time');
 
-				if(minute < 10) minute = "0"+minute;
-				if(seconde < 10) seconde = "0"+seconde;
+        var audio = new Audio(getAudioParameter());
+        var duration;
+        var autoplay = true;
 
-				return minute+":"+seconde;
-			}
 
-			function appendProgressTime(currentTime) {
-				total_duration = formatTime(audio.duration);
-				currentTime = formatTime(currentTime);
+        var icon = document.querySelector('.play');
 
-				divTime.innerHTML = currentTime+" / "+total_duration;
-			}
 
-			function refreshProgressBar() {
-					duration = audio.duration;
+        initAudio();
 
-					var calculProgressBar;
+        function formatTime(time) {
 
-					var interval = setInterval(function() {
+            var minute = Math.floor(time / 60),
+                seconde = time % 60;
 
-						calculProgressBar = audio.currentTime * 100 / duration;
+            seconde = Math.round(seconde);
 
-						if(calculProgressBar < 100) {
-							progress.value = calculProgressBar;
+            if (minute < 10) minute = "0" + minute;
+            if (seconde < 10) seconde = "0" + seconde;
 
-							appendProgressTime(audio.currentTime);
-						} else {
-							clearInterval(interval);
-						}
-					}, 100);
-			}
+            return minute + ":" + seconde;
+        }
 
-			function initVolume() {
-				audio.volume = 0.5;
+        function appendProgressTime(currentTime) {
+            total_duration = formatTime(audio.duration);
+            currentTime = formatTime(currentTime);
 
-				volume.addEventListener('input', function() {
-					audio.volume = volume.value / 100;
-				});
-			}
+            divTime.innerHTML = currentTime + "/" + total_duration;
+        }
 
-			function initLoop() {
+        function refreshProgressBar() {
+            duration = audio.duration;
 
-				loop.addEventListener('click', function() {
+            var calculProgressBar;
 
-					if(audio.loop) {
-						audio.loop = false;
-						loop.className = '';
-					} else {
-						audio.loop = true;
-						loop.className = 'active';
-					}
-				});
-			}
 
-			function firstPlayAudio() {
+            var interval = setInterval(function () {
 
-				audio.addEventListener('loadedmetadata', function() {
-					refreshProgressBar();
-					initVolume();
-					initLoop();
-				});
-			}
+                calculProgressBar = audio.currentTime * 100 / duration;
 
-			function initAudio() {
+                if (calculProgressBar < 100) {
+                    //progress.value = calculProgressBar;
+                    var toDeg = (calculProgressBar * 180) / 100;
 
-				firstPlayAudio();
+                    var fill_rotation = toDeg;
+                    var fix_rotation = toDeg + 10;
 
-				if(autoplay) {
-					audio.play();
-					play.style.display = 'none';
-					
-				} else {
-					pause.style.display = 'none';
-				}
-			}
+                    if (fix_rotation >= 180) {
+                        fix_rotation = fix_rotation - 10;
+                    }
 
-			function getUrlVars(){
-				var vars = {},
-						parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-					vars[key] = value;
-					});
-				return vars;
-			}
+                    document.querySelector('.circle .mask.full').style.transform = "rotate(" + fill_rotation + 'deg)';
+                    document.querySelector('.circle .fill').style.transform = "rotate(" + fill_rotation + 'deg)';
+                    document.querySelector('.circle .fill.fix').style.transform = "rotate(" + fix_rotation + 'deg)';
 
-			function getAudioParameter() {
-				return getUrlVars().audio;
-			}
+                    appendProgressTime(audio.currentTime);
+                } else {
+                    clearInterval(interval);
+                }
+            }, 100);
+        }
 
-			play.addEventListener('click',function() {
-				audio.play();
-				pause.style.display = 'block';
-				play.style.display = 'none';
-			});
+        function initVolume() {
+            audio.volume = 0.5;
 
-			pause.addEventListener('click',function() {
-				audio.pause();
-				play.style.display = 'block';
-				pause.style.display = 'none';
-			});
+            volume.addEventListener('input', function () {
+                audio.volume = volume.value / 100;
+            });
+        }
 
-			speaker.addEventListener('click', function() {
-				audio.muted = !audio.muted;
-				speaker.classList.toggle('mute');
-			});
+        function initLoop() {
 
-		</script>
+            loop.addEventListener('click', function () {
 
-	</body>
+                if (audio.loop) {
+                    audio.loop = false;
+                    loop.className = '';
+                } else {
+                    audio.loop = true;
+                    loop.className = 'active';
+                }
+            });
+        }
+
+        function firstPlayAudio() {
+
+            audio.addEventListener('loadedmetadata', function () {
+                refreshProgressBar();
+                initVolume();
+                initLoop();
+            });
+        }
+
+        function initAudio() {
+
+            firstPlayAudio();
+
+            if (autoplay) {
+                audio.play();
+                //                play.style.display = 'none';
+
+            } // else {
+            //                pause.style.display = 'none';
+            //            }
+        }
+
+        function getUrlVars() {
+            var vars = {},
+                parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                    vars[key] = value;
+                });
+            return vars;
+        }
+
+        function getAudioParameter() {
+            return getUrlVars().audio;
+        }
+
+        icon.addEventListener('click', function () {
+            icon.classList.toggle('active');
+            if (icon.classList.contains('active')) {
+                audio.pause()
+            } else {
+                audio.play()
+            };
+            //            pause.style.display = 'block';
+            //            play.style.display = 'none';
+
+        });
+
+        //        pause.addEventListener('click', function () {
+        //            audio.pause();
+        //            play.style.display = 'block';
+        //            pause.style.display = 'none';
+        //            icon.classList.toggle('active');
+        //
+        //        });
+
+        speaker.addEventListener('click', function () {
+            audio.muted = !audio.muted;
+            speaker.classList.toggle('mute');
+        });
+    </script>
+
+</body>
 
 </html>

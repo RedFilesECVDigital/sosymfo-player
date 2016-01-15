@@ -1,57 +1,204 @@
+body {
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+}
 
 .player {
-	background: #F7F7F7;
-	max-width: 100%;
-	padding: 10px;
-	font-family: 'Verdana';
-	font-size: 12px;
+    background: #F7F7F7;
+    font-family: 'Verdana';
+    font-size: 12px;
 }
 
 .player .progress-bar {
-	width: 100%;
-	border: none;
+    width: 100%;
+    border: none;
 }
 
 .player .progress-bar[value] {
-  /* Reset the default appearance */
-/*  -webkit-appearance: none;
-*/   appearance: none;
-
-  width: 250px;
-  height: 20px;
+    /* Reset the default appearance */
+    /*  -webkit-appearance: none;
+*/
+    appearance: none;
+    width: 250px;
+    height: 20px;
 }
 
 button {
-	color: transparent;
-	width: 16px;
-	height: 16px;
-	border: none;
-	box-shadow: none;
-	font-size: 0;
-	outline-style: none;
-	cursor: pointer;
+    color: transparent;
+    width: 16px;
+    height: 16px;
+    border: none;
+    box-shadow: none;
+    font-size: 0;
+    outline-style: none;
+    cursor: pointer;
+    background: none;
 }
 
+
+/*
 button#pause {
-	background: url(images/pause.png) no-repeat;
+    background: url(images/pause.png) no-repeat;
 }
 
 button#play {
-	background: url(images/play.png) no-repeat;
+    background: url(images/play.png) no-repeat;
 }
+*/
 
 button#speaker {
-	background: url(images/speaker.png) no-repeat;
+    background: url(images/speaker.png) no-repeat;
+        vertical-align: middle;
 }
 
 button#speaker.mute {
-	background: url(images/speaker-mute.png) no-repeat;
+    background: url(images/speaker-mute.png) no-repeat;
 }
 
 button#loop {
-	background: url(images/loop.png) no-repeat;
+    background: url(images/loop.png) no-repeat;
+        vertical-align: middle;
 }
 
 button#loop.active {
-	background: url(images/loop-active.png) no-repeat;
+    background: url(images/loop-active.png) no-repeat;
+}
+
+.time {
+    position: absolute;
+    left: 511px;
+    top: 130px;
+    font-size: 11px;
+}
+
+.radial-progress {
+    position: relative;
+    width: 170px;
+    height: 170px;
+    background-color: #d6dadc;
+    border-radius: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.radial-progress .circle .mask,
+.radial-progress .circle .fill,
+.radial-progress .circle .shadow {
+    width: 170px;
+    height: 170px;
+    position: absolute;
+    border-radius: 50%;
+}
+
+.radial-progress .circle .mask,
+.radial-progress .circle .fill {
+    -webkit-backface-visibility: hidden;
+    transition: -webkit-transform 1s;
+    transition: -ms-transform 1s;
+    transition: transform 1s;
+}
+
+.radial-progress .circle .mask {
+    clip: rect(0px, 170px, 170px, 85px);
+}
+
+.radial-progress .circle .mask .fill {
+    clip: rect(0px, 85px, 170px, 0px);
+    background-color: #97a71d;
+}
+
+.radial-progress .inset {
+    width: 140px;
+    height: 140px;
+    position: absolute;
+    margin-left: 15px;
+    margin-top: 15px;
+    background-color: #fbfbfb;
+    border-radius: 50%;
+}
+
+.play {
+    display: block;
+    width: 0;
+    height: 0;
+    padding: 0;
+    border-top: 40px solid transparent;
+    border-bottom: 40px solid transparent;
+    border-left: 50px solid #2c3e50;
+    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-30%, -50%);
+    z-index: 1;
+    transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+}
+
+.play:after {
+    content: '';
+    opacity: 0;
+    transition: opacity 0.6s;
+    -webkit-transition: opacity 0.6s;
+    -moz-transition: opacity 0.6s;
+}
+
+.play:hover:before,
+.play:focus:before {
+    transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+    -moz-transform: scale(1.1);
+}
+
+.play.active {
+    border-color: transparent;
+}
+
+.play.active:after {
+    content: '';
+    opacity: 1;
+    width: 50px;
+    height: 75px;
+    background: #2c3e50;
+    position: absolute;
+    right: -4px;
+    top: -40px;
+    border-left: 26px solid #2c3e50;
+    box-shadow: inset 24px 0 0 0 #f9f9f9;
+}
+
+input[type=range]{
+    -webkit-appearance: none;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 300px;
+    height: 5px;
+    background: #ddd;
+    border: none;
+    border-radius: 3px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: goldenrod;
+    margin-top: -6px;
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #ccc;
+}
+
+.volume {
+        vertical-align: middle;
 }
